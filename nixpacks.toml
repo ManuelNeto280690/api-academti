@@ -1,2 +1,2 @@
 [phases.build]
-cmds = ['php artisan optimize']
+cmds = ['php artisan optimize:clear']
