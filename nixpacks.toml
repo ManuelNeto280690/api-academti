@@ -1,2 +1,2 @@
 [phases.build]
-cmds = ['php artisan optimize:clear']
+cmds = ['echo "Skipping build phase"']
