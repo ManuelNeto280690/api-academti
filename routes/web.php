@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return response()->json([
-        'api' => 'Ceftic API',
+        'api' => 'AcademTI API',
         'version' => '1.0.0',
         'status' => 'online',
     ]);
