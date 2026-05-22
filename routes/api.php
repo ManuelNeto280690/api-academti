@@ -20,6 +20,7 @@ Route::get('/courses/{course:slug}', [PublicCourseController::class, 'show']);
 Route::get('/categories', [\App\Http\Controllers\Public\CategoryController::class, 'index']);
 Route::post('/enrollments/guest', [\App\Http\Controllers\Public\EnrollmentController::class, 'guestStore']);
 Route::get('/public/settings', [\App\Http\Controllers\Public\SettingController::class, 'index']);
+Route::get('/public/mentors', [\App\Http\Controllers\Public\MentorController::class, 'index']);
 Route::get('/student/courses/{id}/certificate', [\App\Http\Controllers\Student\CertificateController::class, 'show']);
 Route::get('/certifications', [\App\Http\Controllers\Admin\CertificationController::class, 'index']);
 Route::get('/certifications/{certification}', [\App\Http\Controllers\Admin\CertificationController::class, 'show']);
