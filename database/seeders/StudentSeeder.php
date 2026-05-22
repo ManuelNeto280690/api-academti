@@ -26,7 +26,7 @@ class StudentSeeder extends Seeder
                     'name' => "Aluno Teste {$i}",
                     'password' => 'elite@2025',
                     'role' => 'student',
-                    'phone' => '+244 923 000 0' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'phone' => '+244 923 000 001' . str_pad($i, 2, '0', STR_PAD_LEFT),
                     'status' => $i % 5 === 0 ? 'suspenso' : 'ativo'
                 ]
             );
