@@ -14,11 +14,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        \Illuminate\Auth\Notifications\ResetPassword::createUrlUsing(function ($user, string $token) {
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            return $frontendUrl . '/alterar-senha?token=' . $token . '&email=' . urlencode($user->email);
+        });
     }
 }

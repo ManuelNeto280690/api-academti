@@ -47,6 +47,40 @@ Route::middleware('auth:sanctum')->group(function () {
     // Course Reviews
     Route::post('/student/reviews', [\App\Http\Controllers\Student\ReviewController::class, 'store']);
 
+    // Trainer Only Routes
+    Route::middleware(['role:formador,admin'])->prefix('trainer')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Trainer\DashboardController::class, 'index']);
+        
+        Route::get('/courses', [\App\Http\Controllers\Trainer\CourseController::class, 'index']);
+        Route::post('/courses', [\App\Http\Controllers\Trainer\CourseController::class, 'store']);
+        Route::put('/courses/{course}', [\App\Http\Controllers\Trainer\CourseController::class, 'update']);
+        Route::delete('/courses/{course}', [\App\Http\Controllers\Trainer\CourseController::class, 'destroy']);
+
+        // Módulos
+        Route::get('/courses/{course}/modules', [\App\Http\Controllers\Trainer\ModuleController::class, 'index']);
+        Route::post('/courses/{course}/modules', [\App\Http\Controllers\Trainer\ModuleController::class, 'store']);
+        Route::put('/modules/{module}', [\App\Http\Controllers\Trainer\ModuleController::class, 'update']);
+        Route::delete('/modules/{module}', [\App\Http\Controllers\Trainer\ModuleController::class, 'destroy']);
+        Route::post('/modules/reorder', [\App\Http\Controllers\Trainer\ModuleController::class, 'reorder']);
+
+        // Aulas
+        Route::get('/modules/{module}/lessons', [\App\Http\Controllers\Trainer\LessonController::class, 'index']);
+        Route::post('/modules/{module}/lessons', [\App\Http\Controllers\Trainer\LessonController::class, 'store']);
+        Route::put('/lessons/{lesson}', [\App\Http\Controllers\Trainer\LessonController::class, 'update']);
+        Route::delete('/lessons/{lesson}', [\App\Http\Controllers\Trainer\LessonController::class, 'destroy']);
+        Route::post('/lessons/reorder', [\App\Http\Controllers\Trainer\LessonController::class, 'reorder']);
+
+        // Interação (Alunos & Avaliações)
+        Route::get('/students', [\App\Http\Controllers\Trainer\InteractionController::class, 'getStudents']);
+        Route::get('/reviews', [\App\Http\Controllers\Trainer\InteractionController::class, 'getReviews']);
+        Route::post('/reviews/{id}/reply', [\App\Http\Controllers\Trainer\InteractionController::class, 'replyToReview']);
+        Route::get('/assignments', [\App\Http\Controllers\Trainer\InteractionController::class, 'getAssignments']);
+
+        // Mentorias & Estatísticas
+        Route::get('/mentorships', [\App\Http\Controllers\Trainer\MentorshipController::class, 'index']);
+        Route::get('/stats', [\App\Http\Controllers\Trainer\MentorshipController::class, 'stats']);
+    });
+
     // Admin Only Routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         // Quiz Locking/Unlocking
@@ -60,9 +94,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/courses/{course}/reject', [AdminCourseController::class, 'reject'])->middleware('can:aprovar-cursos');
         Route::delete('/courses/{course}', [AdminCourseController::class, 'destroy'])->middleware('can:eliminar-cursos');
 
-        // Configurações
+        // Dashboard e Relatórios
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('can:gerir-acessos');
+        Route::get('/reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->middleware('can:gerir-acessos');
+        
+        // Mentorias & Notificações
+        Route::get('/mentorships', [\App\Http\Controllers\Admin\MentorshipController::class, 'index'])->middleware('can:gerir-acessos');
+        Route::get('/notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->middleware('can:gerir-acessos');
+
+        // Comunidade
+        Route::get('/community', [\App\Http\Controllers\Admin\CommunityController::class, 'index'])->middleware('can:gerir-acessos');
+        Route::post('/community/{post}/approve', [\App\Http\Controllers\Admin\CommunityController::class, 'approve'])->middleware('can:gerir-acessos');
+        Route::post('/community/{post}/pin', [\App\Http\Controllers\Admin\CommunityController::class, 'pin'])->middleware('can:gerir-acessos');
+        Route::delete('/community/{post}', [\App\Http\Controllers\Admin\CommunityController::class, 'destroy'])->middleware('can:gerir-acessos');
+        Route::post('/community/{post}/ban', [\App\Http\Controllers\Admin\CommunityController::class, 'banUser'])->middleware('can:gerir-acessos');
+
+        // Configurações e Finanças
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->middleware('can:gerir-acessos');
         Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->middleware('can:gerir-acessos');
+        Route::get('/finances', [\App\Http\Controllers\Admin\FinanceController::class, 'index'])->middleware('can:gerir-acessos');
+        Route::post('/finances/payout', [\App\Http\Controllers\Admin\FinanceController::class, 'payout'])->middleware('can:gerir-acessos');
 
         // Módulos
         Route::get('/courses/{course}/modules', [\App\Http\Controllers\Admin\ModuleController::class, 'index'])->middleware('can:ver-cursos');
@@ -167,6 +218,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/materials', [\App\Http\Controllers\Admin\MaterialController::class, 'index'])->middleware('can:ver-cursos');
         Route::post('/materials', [\App\Http\Controllers\Admin\MaterialController::class, 'store'])->middleware('can:editar-cursos');
         Route::delete('/materials/{material}', [\App\Http\Controllers\Admin\MaterialController::class, 'destroy'])->middleware('can:editar-cursos');
+    });
+
+    // ==========================================
+    // ROTAS DE EMPRESA
+    // ==========================================
+    Route::group(['prefix' => 'company', 'middleware' => ['role:empresa']], function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Company\DashboardController::class, 'index']);
+        
+        // Gestão de Funcionários (Equipa)
+        Route::get('/employees', [\App\Http\Controllers\Company\EmployeeController::class, 'index']);
+        Route::post('/employees', [\App\Http\Controllers\Company\EmployeeController::class, 'store']);
+        
+        // Formações e Inscrições
+        Route::get('/courses', [\App\Http\Controllers\Company\CourseController::class, 'index']);
+        Route::post('/enrollments', [\App\Http\Controllers\Company\CourseController::class, 'enrollments']);
     });
 });
 

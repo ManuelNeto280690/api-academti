@@ -25,6 +25,9 @@ class User extends Authenticatable
         'role',
         'status',
         'bi_id',
+        'xp_points',
+        'streak_days',
+        'last_study_date',
     ];
 
     public function isAdmin(): bool
@@ -84,6 +87,18 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(CourseReview::class);
+    }
+
+    public function platformNotifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+                    ->withPivot('is_new')
+                    ->withTimestamps();
     }
 
     /**

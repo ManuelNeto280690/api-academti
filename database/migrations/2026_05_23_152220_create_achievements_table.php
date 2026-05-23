@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('user_certifications');
-        Schema::create('user_certifications', function (Blueprint $table) {
+        Schema::create('achievements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->uuid('certification_id');
-            $table->timestamp('issue_date')->useCurrent();
-            $table->string('certificate_code')->unique();
+            $table->string('title');
+            $table->string('icon')->nullable();
+            $table->integer('points');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_certifications');
+        Schema::dropIfExists('achievements');
     }
 };

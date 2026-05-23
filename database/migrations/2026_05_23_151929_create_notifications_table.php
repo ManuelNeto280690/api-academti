@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('user_certifications');
-        Schema::create('user_certifications', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->uuid('certification_id');
-            $table->timestamp('issue_date')->useCurrent();
-            $table->string('certificate_code')->unique();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->string('type')->default('info');
+            $table->text('message');
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_certifications');
+        Schema::dropIfExists('notifications');
     }
 };

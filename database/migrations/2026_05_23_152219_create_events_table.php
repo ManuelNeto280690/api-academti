@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('user_certifications');
-        Schema::create('user_certifications', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->uuid('certification_id');
-            $table->timestamp('issue_date')->useCurrent();
-            $table->string('certificate_code')->unique();
+            $table->string('title');
+            $table->string('type'); // mentoria, workshop, live
+            $table->string('instructor')->nullable();
+            $table->dateTime('date');
+            $table->boolean('is_live')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_certifications');
+        Schema::dropIfExists('events');
     }
 };
