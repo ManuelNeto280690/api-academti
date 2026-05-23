@@ -115,6 +115,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/finances', [\App\Http\Controllers\Admin\FinanceController::class, 'index'])->middleware('can:gerir-acessos');
         Route::post('/finances/payout', [\App\Http\Controllers\Admin\FinanceController::class, 'payout'])->middleware('can:gerir-acessos');
 
+        // Testemunhos
+        Route::apiResource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class)->middleware('can:gerir-acessos');
+
+        // Blog
+        Route::apiResource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class)->middleware('can:gerir-acessos');
+        Route::apiResource('blog-tags', \App\Http\Controllers\Admin\BlogTagController::class)->middleware('can:gerir-acessos');
+        Route::apiResource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class)->middleware('can:gerir-acessos');
+
         // Módulos
         Route::get('/courses/{course}/modules', [\App\Http\Controllers\Admin\ModuleController::class, 'index'])->middleware('can:ver-cursos');
         Route::post('/courses/{course}/modules', [\App\Http\Controllers\Admin\ModuleController::class, 'store'])->middleware('can:editar-cursos');
@@ -234,6 +242,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/courses', [\App\Http\Controllers\Company\CourseController::class, 'index']);
         Route::post('/enrollments', [\App\Http\Controllers\Company\CourseController::class, 'enrollments']);
     });
+});
+
+// ==========================================
+// ROTAS PÚBLICAS
+// ==========================================
+Route::group(['prefix' => 'public'], function () {
+    Route::get('/testimonials', [\App\Http\Controllers\Public\HomeController::class, 'testimonials']);
+    
+    // Blog Public
+    Route::get('/blog/categories', [\App\Http\Controllers\Public\BlogController::class, 'categories']);
+    Route::get('/blog/tags', [\App\Http\Controllers\Public\BlogController::class, 'tags']);
+    Route::get('/blog/posts', [\App\Http\Controllers\Public\BlogController::class, 'posts']);
+    Route::get('/blog/posts/{slug}', [\App\Http\Controllers\Public\BlogController::class, 'show']);
 });
 
 Route::get('/status', function () {

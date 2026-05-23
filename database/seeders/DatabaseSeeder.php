@@ -21,7 +21,11 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             StudentSeeder::class,
             MentorSeeder::class,
+            UserSeeder::class,
             CompanySeeder::class,
+            CommunitySeeder::class,
+            FinanceSeeder::class,
+            TestimonialSeeder::class,
         ]);
     }
 }
