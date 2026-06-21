@@ -1,8 +1,0 @@
-[variables]
-NIXPACKS_PHP_ROOT_DIR = "public"
-
-[phases.build]
-cmds = [
-    'chmod -R 775 storage bootstrap/cache || true',
-    'echo "Skipping NPM build"'
-]
