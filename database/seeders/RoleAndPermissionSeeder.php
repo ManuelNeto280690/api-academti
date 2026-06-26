@@ -97,7 +97,7 @@ class RoleAndPermissionSeeder extends Seeder
             ['email' => 'admin@ceftic.ao'],
             [
                 'name' => 'Ceftic Admin',
-                'password' => ', ',
+                'password' => Hash::make('password'),
                 'role' => 'admin',
                 'status' => 'ativo'
             ]
