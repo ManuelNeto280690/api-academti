@@ -16,8 +16,12 @@ class CourseController extends Controller
             ->get();
     }
 
-    public function show(Course $course)
+    public function show($identifier)
     {
+        $course = Course::where('id', $identifier)
+            ->orWhere('slug', $identifier)
+            ->firstOrFail();
+
         if ($course->status !== 'publicado') {
             return response()->json(['message' => 'Não encontrado.'], 404);
         }
