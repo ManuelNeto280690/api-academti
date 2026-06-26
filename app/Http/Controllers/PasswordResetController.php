@@ -14,13 +14,21 @@ class PasswordResetController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        try {
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => 'Link de recuperação enviado para o seu email.'])
-            : response()->json(['message' => 'Nao foi possivel enviar o link.'], 400);
+            return $status === Password::RESET_LINK_SENT
+                ? response()->json(['message' => 'Link de recuperação enviado para o seu email.'])
+                : response()->json(['message' => 'Nao foi possivel enviar o link. Verifique se o email está registado.'], 400);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao enviar email de recuperação: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Erro ao enviar o email. Por favor, tente novamente mais tarde.',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
     }
 
     public function resetPassword(Request $request)
